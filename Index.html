@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pradum GK AI - GK Quiz</title>
+<meta name="description" content="Pradum GK AI पर सामान्य ज्ञान सीखें और मुफ्त GK Quiz खेलें।">
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f5f7fb;color:#182230}
+header{background:#3157d5;color:#fff;text-align:center;padding:30px 15px}
+header h1{margin:0 0 8px;font-size:30px}.wrap{max-width:700px;margin:20px auto;padding:0 15px}
+.card{background:#fff;border-radius:18px;padding:22px;box-shadow:0 5px 20px #00000012;margin-bottom:18px}
+h2{margin-top:0}button{width:100%;padding:14px;margin:7px 0;border:0;border-radius:11px;background:#eef2ff;font-size:16px;cursor:pointer}
+button:hover{background:#dfe6ff}.primary{background:#3157d5;color:#fff}.cat{display:grid;grid-template-columns:1fr 1fr;gap:10px}.cat button{margin:0}
+.info{color:#667085;line-height:1.5}.score{font-size:24px;font-weight:bold}
+footer{text-align:center;padding:25px;color:#667085;font-size:14px}
+</style>
+</head>
+<body>
+<header><h1>🧠 Pradum GK AI</h1><div>सीखें • Quiz खेलें • अपना Score देखें</div></header>
+<div class="wrap">
+<section class="card">
+<h2>GK Categories</h2>
+<div class="cat">
+<button onclick="start('india')">🇮🇳 India GK</button>
+<button onclick="start('world')">🌍 World GK</button>
+<button onclick="start('history')">🏛️ History</button>
+<button onclick="start('science')">🔬 Science</button>
+</div>
+</section>
+<section class="card" id="quiz">
+<h2>GK Quiz</h2>
+<p class="info">किसी category को चुनकर quiz शुरू करें। हर सवाल में 4 विकल्प होंगे।</p>
+<button class="primary" onclick="start('all')">📝 Quiz शुरू करें</button>
+</section>
+</div>
+<footer>Pradum GK AI • Educational Quiz Website</footer>
+<script>
+const data={
+india:[
+["भारत की राजधानी क्या है?",["पटना","नई दिल्ली","मुंबई","कोलकाता"],1],
+["भारत का राष्ट्रीय पशु कौन है?",["शेर","हाथी","बाघ","मोर"],2],
+["भारत का राष्ट्रीय पक्षी कौन है?",["मोर","कबूतर","तोता","हंस"],0],
+["भारत का राष्ट्रीय फूल कौन है?",["कमल","गुलाब","गेंदा","चमेली"],0]
+],
+world:[
+["सबसे बड़ा महासागर कौन सा है?",["अटलांटिक","हिंद महासागर","प्रशांत","आर्कटिक"],2],
+["पृथ्वी का उपग्रह कौन है?",["सूर्य","चंद्रमा","मंगल","शुक्र"],1]
+],
+history:[
+["भारत को स्वतंत्रता किस वर्ष मिली?",["1945","1947","1950","1952"],1],
+["भारतीय संविधान कब लागू हुआ?",["15 अगस्त 1947","26 जनवरी 1950","2 अक्टूबर 1950","26 नवंबर 1949"],1]
+],
+science:[
+["पानी का रासायनिक सूत्र क्या है?",["CO2","H2O","O2","NaCl"],1],
+["सूर्य किस प्रकार का पिंड है?",["ग्रह","तारा","उपग्रह","धूमकेतु"],1]
+]};
+let qs=[],i=0,score=0;
+function start(cat){qs=cat==='all'?Object.values(data).flat():data[cat];i=0;score=0;show();}
+function show(){
+let q=qs[i];
+document.getElementById('quiz').innerHTML=`<div class="info">प्रश्न ${i+1} / ${qs.length}</div><h2>${q[0]}</h2>`+
+q[1].map((x,n)=>`<button onclick="ans(${n})">${String.fromCharCode(65+n)}) ${x}</button>`).join('');
+}
+function ans(n){if(n===qs[i][2])score++;i++;if(i<qs.length)show();else document.getElementById('quiz').innerHTML=
+`<div class="score">🎉 Quiz पूरा!</div><h2>आपका Score: ${score} / ${qs.length}</h2>
+<p class="info">${score>=7?'बहुत बढ़िया!':'अच्छी कोशिश! दोबारा practice करें।'}</p>
+<button class="primary" onclick="start('all')">फिर से Quiz खेलें</button>`}
+</script>
+</body>
+</html>
