@@ -1,205 +1,25 @@
-<!DOCTYPE html>
-<html lang="hi">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Pradum GK AI - Smart Test</title>
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#3157d5">
-
-<style>
-*{box-sizing:border-box}
-body{margin:0;background:#f4f7fb;color:#172033;font-family:Arial,sans-serif}
-header{background:linear-gradient(135deg,#3157d5,#673ab7);color:white;text-align:center;padding:28px 15px}
-header h1{margin:0;font-size:30px}
-.container{max-width:900px;margin:auto;padding:18px}
-.card{background:white;border-radius:18px;padding:20px;margin:15px 0;box-shadow:0 5px 20px #0001}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
-.subject{border:1px solid #e2e6f0;border-radius:16px;padding:18px}
-button{border:0;border-radius:12px;padding:13px 18px;font-size:16px;cursor:pointer;margin:5px}
-.primary{background:#3157d5;color:white}
-.dark{background:#111;color:white}
-.red{background:#e60000;color:white}
-.light{background:#edf1ff;color:#3157d5}
-.levels{display:flex;flex-wrap:wrap;gap:8px}
-.lock{opacity:.4;cursor:not-allowed}
-.progress{height:9px;background:#e5e8ef;border-radius:20px;overflow:hidden}
-.progress div{height:100%;background:#3157d5}
-.question{font-size:21px;font-weight:bold;line-height:1.5;margin:20px 0}
-.option{display:block;width:100%;text-align:left;background:#f7f8fc;border:2px solid transparent;margin:10px 0}
-.option.selected{border-color:#3157d5;background:#eef2ff}
-.top{display:flex;justify-content:space-between;flex-wrap:wrap}
-.score{text-align:center;font-size:38px;font-weight:bold;color:#3157d5}
-.correct{color:#168a45}
-.wrong{color:#d62828}
-.hidden{display:none}
-footer{text-align:center;padding:25px;color:#777}
-select{padding:10px;border-radius:10px}
-@media(max-width:600px){.grid{grid-template-columns:1fr}}
-</style>
-</head>
-
-<body>
-
-<header>
-<h1>🧠 Pradum GK AI</h1>
-<p>Smart Learning • Hard Tests • Better Practice</p>
-</header>
-
-<div class="container">
-
-<section id="home">
-
-<div class="card">
-<h2>Welcome 👋</h2>
-<p>अपना Subject चुनें और Test शुरू करें।</p>
-<button class="dark" onclick="installApp()">📲 Install App</button>
-<button class="red" onclick="openYT()">▶️ Learning Videos</button>
-</div>
-
-<div class="card">
-<h3>🌐 Language</h3>
-<select id="language">
-<option value="hi">हिंदी</option>
-<option value="en">English</option>
-</select>
-</div>
-
-<div class="card">
-<h2>📚 Subjects</h2>
-
-<div class="grid">
-
-<div class="subject">
-<h3>➗ Maths</h3>
-<p>Calculation & Concept</p>
-<button class="primary" onclick="openSubject('Maths')">Test शुरू करें</button>
-</div>
-
-<div class="subject">
-<h3>🧩 Reasoning</h3>
-<p>Logic & Pattern</p>
-<button class="primary" onclick="openSubject('Reasoning')">Test शुरू करें</button>
-</div>
-
-<div class="subject">
-<h3>🇮🇳 GK</h3>
-<p>India General Knowledge</p>
-<button class="primary" onclick="openSubject('GK')">Test शुरू करें</button>
-</div>
-
-<div class="subject">
-<h3>🔬 Science</h3>
-<p>Science Concepts</p>
-<button class="primary" onclick="openSubject('Science')">Test शुरू करें</button>
-</div>
-
-<div class="subject">
-<h3>📜 History</h3>
-<p>Indian History</p>
-<button class="primary" onclick="openSubject('History')">Test शुरू करें</button>
-</div>
-
-<div class="subject">
-<h3>🌍 World GK</h3>
-<p>World Facts</p>
-<button class="primary" onclick="openSubject('World GK')">Test शुरू करें</button>
-</div>
-
-</div>
-</div>
-
-<div class="card">
-<h2>🎥 Hindi Learning</h2>
-<p>Maths और Reasoning की तैयारी के लिए Hindi videos देखें।</p>
-<button class="light" onclick="openYT()">▶️ Videos देखें</button>
-</div>
-
-</section>
-
-
-<section id="levels" class="hidden">
-
-<div class="card">
-
-<button class="light" onclick="home()">← Home</button>
-
-<h2 id="subjectName"></h2>
-
-<p>
-पहले Level को पूरा करें।  
-<strong>25/25 सही</strong> होने पर अगला Level Unlock होगा।
-</p>
-
-<div id="levelButtons" class="levels"></div>
-
-</div>
-
-</section>
-
-
-<section id="quiz" class="hidden">
-
-<div class="card">
-
-<div class="top">
-<b id="testName"></b>
-<b>⏱️ <span id="clock">10:00</span></b>
-</div>
-
-<br>
-
-<div class="progress">
-<div id="bar"></div>
-</div>
-
-<p id="number"></p>
-
-<div id="question" class="question"></div>
-
-<div id="options"></div>
-
-<div class="top">
-<button class="light" onclick="previous()">← Previous</button>
-<button class="primary" onclick="next()">Next →</button>
-</div>
-
-</div>
-
-</section>
-
-
-<section id="result" class="hidden"></section>
-
-</div>
-
-<footer>© 2026 Pradum GK AI</footer>
-
-
-<script>
-
-/* =========================
-   QUESTION DATA
-========================= */
-
-const facts={
-
-GK:[
-["भारत की राजधानी क्या है?","नई दिल्ली","मुंबई","कोलकाता","चेन्नई"],
-["भारत का राष्ट्रीय पशु कौन है?","बाघ","सिंह","हाथी","चीता"],
-["भारत का राष्ट्रीय पक्षी कौन है?","मोर","तोता","हंस","गरुड़"],
-["भारत का राष्ट्रीय फूल कौन है?","कमल","गुलाब","चमेली","सूरजमुखी"],
-["भारत का राष्ट्रीय फल कौन है?","आम","सेब","केला","अमरूद"],
-["भारत का राष्ट्रीय वृक्ष कौन है?","बरगद","नीम","पीपल","आम"],
-["भारत का राष्ट्रीय जलीय जीव कौन है?","गंगा डॉल्फिन","मगरमच्छ","कछुआ","व्हेल"],
-["भारतीय संविधान कब लागू हुआ?","26 जनवरी 1950","15 अगस्त 1947","26 नवंबर 1949","2 अक्टूबर 1950"],
-["भारत का स्वतंत्रता दिवस कब मनाया जाता है?","15 अगस्त","26 जनवरी","2 अक्टूबर","14 नवंबर"],
-["गणतंत्र दिवस कब मनाया जाता है?","26 जनवरी","15 अगस्त","26 नवंबर","2 अक्टूबर"],
-["भारत का सबसे बड़ा राज्य क्षेत्रफल के आधार पर कौन है?","राजस्थान","मध्य प्रदेश","महाराष्ट्र","उत्तर प्रदेश"],
-["भारत का सबसे अधिक जनसंख्या वाला राज्य कौन है?","उत्तर प्रदेश","बिहार","महाराष्ट्र","पश्चिम बंगाल"],
-["भारत की सबसे लंबी नदी कौन सी है?","गंगा","यमुना","गोदावरी","नर्मदा"],
-["भारत का सबसे ऊँचा पर्वत शिखर कौन सा है?","कंचनजंगा","नंदा देवी","अनामुड़ी","धौलागिरी"],
-["भारतीय मुद्रा क्या है?","रुपया","डॉलर","पाउंड","येन"],
-["भारत की संसद के कितने सदन हैं?","दो","एक","तीन","चार"],
-["लोकसभा का कार्यकाल सामान्यतः कितना होता है?","5 वर्ष","4 वर्ष","6 वर्ष","7 वर्ष"],
-["राज्यसभा का सदस्य कितने वर्ष के
+<!doctype html>
+<html lang="hi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#3157d5"><link rel="manifest" href="manifest.json"><title>Pradum GK AI</title><style>
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#f4f7ff;color:#172033}.app{max-width:1050px;margin:auto;padding:18px}.hero{background:linear-gradient(135deg,#3157d5,#6d5dfc);color:white;border-radius:24px;padding:28px;box-shadow:0 12px 35px #3157d52e}.hero h1{margin:0;font-size:30px}.hero p{margin:8px 0 20px;opacity:.9}.top{display:flex;gap:10px;flex-wrap:wrap}.btn{border:0;border-radius:12px;padding:11px 16px;font-weight:700;cursor:pointer}.white{background:white;color:#3157d5}.dark{background:#172033;color:white}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:15px;margin:20px 0}.card{background:white;border-radius:18px;padding:20px;box-shadow:0 5px 22px #17203312;border:1px solid #e7ebf5}.subject{cursor:pointer;transition:.2s}.subject:hover{transform:translateY(-3px);box-shadow:0 10px 28px #3157d52b}.icon{font-size:30px}.muted{color:#667085;font-size:14px}.level{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px}.pill{background:#edf2ff;color:#3157d5;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:700}.locked{opacity:.55}.quiz{max-width:760px;margin:20px auto}.bar{height:9px;background:#e8ecf5;border-radius:99px;overflow:hidden}.bar>i{display:block;height:100%;background:#3157d5}.option{display:block;width:100%;text-align:left;background:#f8f9fc;border:2px solid #e5e9f2;padding:14px;border-radius:13px;margin:10px 0;cursor:pointer}.option.selected{border-color:#3157d5;background:#edf2ff}.nav{display:flex;gap:10px;margin-top:15px}.result{text-align:center}.yt{border-left:5px solid #e53935}.yt a{display:inline-block;margin-top:10px;text-decoration:none;background:#e53935;color:white;padding:11px 15px;border-radius:10px;font-weight:700}.hide{display:none}.lang{padding:9px;border-radius:10px;border:1px solid #d9deea;background:white}.small{font-size:13px}.video{background:#fff7e8;border-left:5px solid #f59e0b}.danger{color:#c62828}.success{color:#16803a}
+</style></head><body><main class="app"><section class="hero"><h1>🧠 Pradum GK AI</h1><p>Learn • Practice • Improve — रोज़ थोड़ा सीखें, अपना Level बढ़ाएँ</p><div class="top"><button class="btn white" id="install">📲 Install App</button><button class="btn dark" onclick="home()">🏠 Home</button><select class="lang" id="lang" onchange="render()"><option value="hi">हिंदी</option><option value="en">English</option></select></div></section><div id="screen"></div></main><script>
+const subjects=[['math','➗','Maths','गणित'],['reason','🧩','Reasoning','रीजनिंग'],['gk','🇮🇳','GK','सामान्य ज्ञान'],['science','🔬','Science','विज्ञान'],['history','🏛️','History','इतिहास'],['world','🌍','World GK','विश्व ज्ञान']];
+const banks={
+math:[['2 + 3 = ?',['4','5','6','7'],1],['10 − 4 = ?',['5','6','7','8'],1],['5 × 2 = ?',['7','8','10','12'],2],['20 ÷ 5 = ?',['2','4','5','6'],1],['7 + 8 = ?',['14','15','16','17'],1],['12 − 7 = ?',['4','5','6','7'],1],['3 × 4 = ?',['7','10','12','14'],2],['18 ÷ 3 = ?',['5','6','7','8'],1],['25% of 100 = ?',['20','25','30','40'],1],['50% of 80 = ?',['30','40','50','60'],1],['1/2 = ?',['25%','50%','75%','100%'],1],['10% of 200 = ?',['10','20','30','40'],1],['15 + 9 = ?',['22','23','24','25'],2],['30 − 12 = ?',['16','18','20','22'],1],['6 × 6 = ?',['30','36','42','48'],1],['40 ÷ 8 = ?',['4','5','6','8'],1],['9 + 11 = ?',['18','19','20','21'],2],['100 − 35 = ?',['55','65','75','85'],1],['4 × 7 = ?',['21','24','28','32'],2],['45 ÷ 9 = ?',['4','5','6','7'],1],['3/4 = ?',['25%','50%','75%','80%'],2],['200 का 5% = ?',['5','10','15','20'],1],['11 × 3 = ?',['30','33','36','39'],1],['72 ÷ 8 = ?',['7','8','9','10'],2],['13 + 17 = ?',['28','29','30','31'],2]],
+reason:[['श्रृंखला: 2, 4, 6, 8, ?',['9','10','11','12'],1],['विषम चुनें:',['आम','सेब','केला','गाजर'],3],['A के बाद कौन-सा अक्षर आता है?',['B','C','D','Z'],0],['उत्तर की विपरीत दिशा?',['पूर्व','पश्चिम','दक्षिण','उत्तर'],1],['1, 3, 5, 7, ?',['8','9','10','11'],1],['यदि CAT को DOG कहा जाए, तो CAT क्या है?',['DOG','CAT','BIRD','COW'],0],['सोमवार के बाद?',['रविवार','मंगलवार','बुधवार','शुक्रवार'],1],['3, 6, 9, ?',['10','11','12','13'],2],['पानी : प्यास :: भोजन : ?',['नींद','भूख','खेल','दौड़'],1],['घड़ी में 3 बजे मिनट की सुई कहाँ?',['3','6','9','12'],3],['5, 10, 15, ?',['18','20','25','30'],1],['कुत्ता : पिल्ला :: बिल्ली : ?',['बछड़ा','बिलौटा','शावक','बच्चा'],1],['पूर्व के विपरीत?',['पश्चिम','उत्तर','दक्षिण','आकाश'],0],['एक सप्ताह में दिन?',['5','6','7','8'],2],['2, 4, 8, 16, ?',['20','24','30','32'],3],['विषम चुनें:',['2','4','6','9'],3],['भाई की बहन आपके लिए?',['माता','बहन','दादी','चाची'],1],['कल के बाद वाला दिन?',['आज','कल','परसों','रविवार'],2],['A=1, B=2 तो C=?',['2','3','4','5'],1],['उत्तर-पश्चिम की विपरीत दिशा?',['दक्षिण-पूर्व','उत्तर-पूर्व','दक्षिण-पश्चिम','पश्चिम'],0],['10, 20, 30, ?',['35','40','45','50'],1],['पक्षी उड़ता है, मछली?',['दौड़ती','तैरती','कूदती','रेंगती'],1],['महीना : वर्ष :: दिन : ?',['घंटा','सप्ताह','समय','मिनट'],1],['चार भुजाओं वाली आकृति?',['त्रिभुज','वृत्त','चतुर्भुज','रेखा'],2],['सुबह के बाद?',['रात','दोपहर','कल','शाम'],1]],
+gk:[['भारत की राजधानी?',['मुंबई','नई दिल्ली','पटना','कोलकाता'],1],['भारत का राष्ट्रीय पशु?',['शेर','बाघ','हाथी','हिरण'],1],['राष्ट्रीय पक्षी?',['मोर','कबूतर','तोता','गरुड़'],0],['राष्ट्रीय फूल?',['गुलाब','कमल','गेंदा','चमेली'],1],['भारतीय मुद्रा?',['डॉलर','रुपया','यूरो','येन'],1],['भारत का राष्ट्रीय खेल आधिकारिक रूप से?',['हॉकी','क्रिकेट','कोई आधिकारिक राष्ट्रीय खेल नहीं','फुटबॉल'],2],['भारत का सबसे बड़ा राज्य क्षेत्रफल से?',['बिहार','राजस्थान','महाराष्ट्र','उत्तर प्रदेश'],1],['बिहार की राजधानी?',['गया','पटना','आरा','सासाराम'],1],['भारत का संविधान कब लागू हुआ?',['15 अगस्त 1947','26 जनवरी 1950','2 अक्टूबर 1950','26 नवंबर 1949'],1],['भारत का स्वतंत्रता दिवस?',['26 जनवरी','15 अगस्त','2 अक्टूबर','14 नवंबर'],1],['गणतंत्र दिवस?',['15 अगस्त','26 जनवरी','5 सितंबर','14 अप्रैल'],1],['भारत का राष्ट्रीय वृक्ष?',['नीम','बरगद','पीपल','आम'],1],['राष्ट्रीय फल?',['आम','सेब','केला','अंगूर'],0],['भारतीय राष्ट्रीय ध्वज में कितने मुख्य रंग?',['2','3','4','5'],1],['अशोक चक्र में कितनी तीलियाँ?',['20','24','28','32'],1],['शिक्षक दिवस भारत में?',['5 सितंबर','14 नवंबर','2 अक्टूबर','26 जनवरी'],0],['बाल दिवस?',['5 सितंबर','14 नवंबर','15 अगस्त','1 मई'],1],['गांधी जयंती?',['2 अक्टूबर','26 जनवरी','15 अगस्त','14 नवंबर'],0],['भारत में कितने राज्य हैं?',['26','28','30','31'],1],['लोकसभा का सामान्य कार्यकाल?',['3 वर्ष','4 वर्ष','5 वर्ष','6 वर्ष'],2],['भारत का सर्वोच्च न्यायालय कहाँ है?',['मुंबई','नई दिल्ली','पटना','चेन्नई'],1],['राष्ट्रीय नदी?',['गंगा','यमुना','गोदावरी','नर्मदा'],0],['क्षेत्रफल में भारत का विश्व स्थान लगभग?',['1','2','7','10'],2],['भारत का पड़ोसी देश नहीं?',['नेपाल','भूटान','ब्राजील','बांग्लादेश'],2],['ISRO का पूरा नाम?',['Indian Space Research Organisation','Indian Science Research Office','International Space Research Organisation','Indian Satellite Research Organisation'],0]],
+science:[['पानी का रासायनिक सूत्र?',['CO2','H2O','O2','NaCl'],1],['सूर्य क्या है?',['ग्रह','उपग्रह','तारा','धूमकेतु'],2],['मनुष्य सांस में मुख्यतः कौन-सी गैस उपयोग करता है?',['ऑक्सीजन','हीलियम','हाइड्रोजन','नाइट्रोजन'],0],['पौधे भोजन किस प्रक्रिया से बनाते हैं?',['श्वसन','प्रकाश संश्लेषण','पाचन','वाष्पीकरण'],1],['पृथ्वी का उपग्रह?',['मंगल','चंद्रमा','शुक्र','सूर्य'],1],['पानी 100°C पर सामान्य दाब में?',['जमता','उबलता','ठोस होता','गायब होता'],1],['बल की SI इकाई?',['वाट','न्यूटन','जूल','पास्कल'],1],['ऊर्जा की SI इकाई?',['जूल','मीटर','किलोग्राम','एम्पियर'],0],['विद्युत धारा की SI इकाई?',['वोल्ट','ओम','एम्पियर','वाट'],2],['मानव शरीर में रक्त पंप करता है?',['फेफड़ा','हृदय','मस्तिष्क','यकृत'],1],['पौधों में हरा रंग किससे?',['हीमोग्लोबिन','क्लोरोफिल','आयोडीन','कैल्शियम'],1],['ध्वनि को माध्यम की आवश्यकता होती है?',['हाँ','नहीं','केवल अंतरिक्ष में','केवल पानी में'],0],['पृथ्वी का सबसे बाहरी ठोस भाग?',['कोर','मेंटल','भूपर्पटी','वायुमंडल'],2],['ऑक्सीजन का प्रतीक?',['Ox','O','Og','Om'],1],['कार्बन डाइऑक्साइड का सूत्र?',['CO','CO2','C2O','O2C'],1],['मानव शरीर का नियंत्रण केंद्र?',['हृदय','मस्तिष्क','फेफड़ा','किडनी'],1],['प्रकाश की गति सबसे अधिक कहाँ?',['वायु','पानी','निर्वात','कांच'],2],['विटामिन D का प्रमुख प्राकृतिक स्रोत?',['सूर्य का प्रकाश','नमक','चीनी','चावल'],0],['चुंबक के कितने ध्रुव?',['1','2','3','4'],1],['तापमान मापने का यंत्र?',['बैरोमीटर','थर्मामीटर','अमीटर','वोल्टमीटर'],1],['वायु में सबसे अधिक गैस?',['ऑक्सीजन','नाइट्रोजन','CO2','हीलियम'],1],['पृथ्वी सूर्य की परिक्रमा लगभग कितने समय में करती है?',['24 घंटे','30 दिन','365 दिन','12 घंटे'],2],['मानव शरीर में सामान्यतः कितने फेफड़े?',['1','2','3','4'],1],['किडनी का मुख्य कार्य?',['रक्त पंप करना','अपशिष्ट छानना','भोजन पचाना','देखना'],1],['बर्फ पानी की कौन-सी अवस्था है?',['गैस','द्रव','ठोस','प्लाज्मा'],2]],
+history:[['भारत स्वतंत्र कब हुआ?',['1945','1947','1950','1952'],1],['भारतीय संविधान कब अपनाया गया?',['15 अगस्त 1947','26 नवंबर 1949','26 जनवरी 1950','2 अक्टूबर 1950'],1],['महात्मा गांधी का जन्मदिन?',['2 अक्टूबर','14 नवंबर','15 अगस्त','26 जनवरी'],0],['भारत का पहला स्वतंत्रता संग्राम किस वर्ष?',['1757','1857','1885','1942'],1],['दांडी मार्च किस आंदोलन से जुड़ा था?',['नमक सत्याग्रह','भारत छोड़ो','असहयोग','स्वदेशी'],0],['भारत छोड़ो आंदोलन?',['1919','1930','1942','1947'],2],['जलियांवाला बाग घटना?',['1919','1920','1930','1942'],0],['भारतीय राष्ट्रीय कांग्रेस की स्थापना?',['1885','1905','1919','1947'],0],['अशोक किस वंश से?',['मौर्य','गुप्त','चोल','मुगल'],0],['अकबर किस वंश से?',['मौर्य','मुगल','गुप्त','कुषाण'],1],['कुतुब मीनार किस शहर में?',['दिल्ली','पटना','जयपुर','आगरा'],0],['लाल किला किसने बनवाया?',['अकबर','शाहजहाँ','बाबर','अशोक'],1],['प्लासी का युद्ध?',['1757','1764','1857','1942'],0],['सुभाष चंद्र बोस ने किस सेना का नेतृत्व किया?',['आजाद हिंद फौज','पांडव सेना','मराठा सेना','गुप्त सेना'],0],['भारत के पहले राष्ट्रपति?',['राजेंद्र प्रसाद','नेहरू','पटेल','राधाकृष्णन'],0],['भारत के पहले प्रधानमंत्री?',['सरदार पटेल','जवाहरलाल नेहरू','राजेंद्र प्रसाद','लाल बहादुर शास्त्री'],1],['संविधान लागू होने की तारीख?',['26 नवंबर 1949','26 जनवरी 1950','15 अगस्त 1947','2 अक्टूबर 1950'],1],['1857 के विद्रोह का प्रमुख केंद्र?',['मेरठ','मुंबई','चेन्नई','कोलकाता'],0],['भगत सिंह किस आंदोलन के क्रांतिकारी थे?',['भारतीय स्वतंत्रता आंदोलन','हरित क्रांति','सफेद क्रांति','औद्योगिक क्रांति'],0],['स्वदेशी आंदोलन किससे जुड़ा?',['बंगाल विभाजन विरोध','नमक कानून','कर सुधार','शिक्षा नीति'],0],['चंद्रगुप्त मौर्य के गुरु?',['चाणक्य','कालिदास','आर्यभट्ट','तुलसीदास'],0],['नालंदा विश्वविद्यालय कहाँ था?',['बिहार','गुजरात','पंजाब','केरल'],0],['सांची स्तूप किससे जुड़ा?',['बौद्ध धर्म','जैन धर्म','सिख धर्म','ईसाई धर्म'],0],['झांसी की रानी का नाम?',['लक्ष्मीबाई','दुर्गावती','अहिल्याबाई','पद्मिनी'],0],['भारत का राष्ट्रीय अभिलेखागार किस शहर में?',['नई दिल्ली','पटना','लखनऊ','भोपाल'],0]],
+world:[['सबसे बड़ा महासागर?',['अटलांटिक','हिंद','प्रशांत','आर्कटिक'],2],['पृथ्वी का उपग्रह?',['चंद्रमा','सूर्य','मंगल','शुक्र'],0],['विश्व का सबसे बड़ा महाद्वीप?',['अफ्रीका','एशिया','यूरोप','ऑस्ट्रेलिया'],1],['सबसे बड़ा देश क्षेत्रफल से?',['भारत','चीन','रूस','कनाडा'],2],['संयुक्त राष्ट्र मुख्यालय?',['लंदन','न्यूयॉर्क','पेरिस','रोम'],1],['जापान की राजधानी?',['ओसाका','टोक्यो','क्योटो','नारा'],1],['फ्रांस की राजधानी?',['मैड्रिड','पेरिस','रोम','बर्लिन'],1],['अमेरिका की राजधानी?',['न्यूयॉर्क','वॉशिंगटन डी.सी.','लॉस एंजिल्स','शिकागो'],1],['चीन की राजधानी?',['शंघाई','बीजिंग','वुहान','हांगकांग'],1],['मिस्र की राजधानी?',['काहिरा','अलेक्जेंड्रिया','गिजा','लक्सर'],0],['सबसे बड़ा गर्म रेगिस्तान?',['सहारा','गोबी','थार','कालाहारी'],0],['नील नदी किस महाद्वीप में?',['एशिया','अफ्रीका','यूरोप','दक्षिण अमेरिका'],1],['माउंट एवरेस्ट किस पर्वत श्रृंखला में?',['आल्प्स','हिमालय','एंडीज','रॉकी'],1],['ऑस्ट्रेलिया की राजधानी?',['सिडनी','मेलबर्न','कैनबरा','पर्थ'],2],['ब्राजील की राजधानी?',['रियो','ब्रासीलिया','साओ पाउलो','सल्वाडोर'],1],['इंग्लैंड की राजधानी?',['लंदन','मैनचेस्टर','लिवरपूल','ऑक्सफोर्ड'],0],['इटली की राजधानी?',['मिलान','रोम','वेनिस','नेपल्स'],1],['जर्मनी की राजधानी?',['बर्लिन','म्यूनिख','हैम्बर्ग','बॉन'],0],['कनाडा की राजधानी?',['टोरंटो','ओटावा','वैंकूवर','मॉन्ट्रियल'],1],['विश्व का सबसे बड़ा द्वीप?',['ग्रीनलैंड','मेडागास्कर','बोर्नियो','न्यू गिनी'],0],['भूमध्य रेखा क्या करती है?',['ध्रुवों को जोड़ती','पृथ्वी को उत्तर-दक्षिण में विभाजित करती','पृथ्वी को पूर्व-पश्चिम गोलार्धों में बराबर बाँटती','केवल एशिया से गुजरती'],2],['UN का पूरा नाम?',['United Nations','Universal Network','Union Nations','United Network'],0],['WHO का पूरा नाम?',['World Health Organization','World Human Office','World Housing Organization','World Health Office'],0],['पृथ्वी पर कितने महासागर सामान्यतः माने जाते हैं?',['3','4','5','7'],2],['चंद्रमा पर पहला मानव उतरना किस वर्ष?',['1965','1969','1975','1980'],1]]};
+let state=JSON.parse(localStorage.getItem('pradumProgress')||'{}'), current=null, idx=0, selected=null, score=0;
+function save(){localStorage.setItem('pradumProgress',JSON.stringify(state))}
+function home(){current=null;render()}
+function render(){let L=document.getElementById('lang').value;if(current) return quiz();let s=document.getElementById('screen');s.innerHTML='<div class="grid">'+subjects.map(([id,ic,en,hi])=>{let p=state[id]||0;return `<div class="card subject" onclick="openSubject('${id}')"><div class="icon">${ic}</div><h2>${L==='hi'?hi:en}</h2><div class="muted">${L==='hi'?'25 प्रश्न • Level':'25 Questions • Level'} ${Math.min(p+1,10)}</div><div class="level"><span class="pill">${p>=1?'Level 2 🔓':'Level 1 🔓'}</span><span>›</span></div></div>`}).join('')+'</div><div class="grid"><div class="card yt"><h2>▶️ Pradumn Tiwari – YouTube</h2><p class="muted">मेरे YouTube चैनल पर सीखने और नए वीडियो देखें।</p><a href="https://www.youtube.com/@tiwaripradum1008" target="_blank" rel="noopener">Visit YouTube</a></div><div class="card video"><h2>🎥 Learning Videos</h2><p class="muted">Maths और Reasoning के Hindi learning videos के लिए आपका YouTube channel जोड़ा गया है।</p><button class="btn dark" onclick="location.href='https://www.youtube.com/@tiwaripradum1008'">Videos देखें</button></div></div>'}
+function openSubject(id){let p=state[id]||0;let level=Math.min(p+1,10);document.getElementById('screen').innerHTML=`<div class="card"><button class="btn dark" onclick="home()">← Home</button><h2>${subjects.find(x=>x[0]===id)[1]} ${subjects.find(x=>x[0]===id)[2]}</h2><p class="muted">Level ${level}: 25 questions. अगले Level के लिए 25/25 सही जरूरी है।</p><div class="grid">${[1,2,3,4,5].map(n=>`<div class="card ${n>level?'locked':''}"><b>Level ${n}</b><p class="muted">${n>level?'🔒 पहले पिछला Level 25/25 करें':'25 Questions'}</p>${n<=level?`<button class="btn dark" onclick="start('${id}',${n})">Start Test</button>`:''}</div>`).join('')}</div></div>`}
+function start(id,level){current={id,level};idx=0;selected=null;score=0;quiz()}
+function quiz(){let q=banks[current.id][idx%25];let L=document.getElementById('lang').value;document.getElementById('screen').innerHTML=`<div class="card quiz"><div class="muted">${subjects.find(x=>x[0]===current.id)[2]} • Level ${current.level} • Question ${idx+1}/25</div><div class="bar" style="margin:12px 0"><i style="width:${(idx/25)*100}%"></i></div><h2>${q[0]}</h2>${q[1].map((o,n)=>`<button class="option ${selected===n?'selected':''}" onclick="pick(${n})">${String.fromCharCode(65+n)}. ${o}</button>`).join('')}<div class="nav"><button class="btn dark" onclick="next()">${idx===24?'Submit Test':'Next →'}</button><button class="btn" onclick="openSubject('${current.id}')">Exit</button></div></div>`}
+function pick(n){selected=n;quiz()}
+function next(){if(selected===null){alert('पहले एक उत्तर चुनें।');return}let q=banks[current.id][idx%25];if(selected===q[2])score++;if(idx<24){idx++;selected=null;quiz()}else finish()}
+function finish(){let id=current.id,passed=score===25,p=state[id]||0;if(passed && current.level>p)state[id]=Math.min(current.level,10);save();document.getElementById('screen').innerHTML=`<div class="card result"><h1>${passed?'🎉 Level Clear!':'📘 Test Complete'}</h1><h2>Score: ${score}/25</h2><p class="${passed?'success':'danger'}">${passed?'अगला Level unlock हो गया है।':'अगला Level unlock करने के लिए 25/25 चाहिए।'}</p><button class="btn dark" onclick="openSubject('${id}')">Level पर वापस जाएँ</button><button class="btn" onclick="start('${id}',${current.level})">🔄 Try Again</button></div>`}
+let deferred;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferred=e});document.getElementById('install').onclick=async()=>{if(deferred){deferred.prompt();await deferred.userChoice;deferred=null}else alert('Chrome menu ⋮ खोलकर “Add to Home screen” या “Install app” चुनें।')};
+render();
+</script></body></html>
